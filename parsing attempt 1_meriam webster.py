@@ -13,8 +13,3 @@ def parse_meriam_webster(word: str):
     if len(definitions) != 0:
         return definitions
     return False
-
-
-TEST_WORD = 'clockwork'
-print(requests.get('https://www.merriam-webster.com/dictionary/shark'))
-print(parse_meriam_webster(TEST_WORD))
