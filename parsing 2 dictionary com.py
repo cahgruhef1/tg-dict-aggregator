@@ -9,6 +9,6 @@ def parse_dictionary_com(word: str):
     bs = BeautifulSoup(response.text, "html.parser")
     definitions = bs.find_all('div', 'NZKOFkdkcvYgD3lqOIJw')
     if len(definitions) != 0:
-        definition = bs.find_all('div', 'NZKOFkdkcvYgD3lqOIJw')[0].text.split('<!-- -->')[0]
+        definition = definitions[0].text.split('<!-- -->')[0]
         return definition
     return False
