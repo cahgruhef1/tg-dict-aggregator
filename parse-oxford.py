@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 def parse_oxford(word: str):
     TEMPLATE_URL = "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/"
     HEADERS = {'User-Agent': 'Mozilla/5.0'}
-    request = TEMPLATE_URL + word
+    request = TEMPLATE_URL + word.lower()
     response = requests.get(request, headers=HEADERS)
     html = BeautifulSoup(response.text, "html.parser")
     definitions = html.find_all("span", "def")
