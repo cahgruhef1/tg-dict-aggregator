@@ -11,4 +11,9 @@ def parse_dictionary_com(word: str):
     if len(definitions) != 0:
         definition = definitions[0].text.split('<!-- -->')[0]
         return definition
-    return False
+    return "Word not found."
+
+
+if __name__ == "__main__":
+    print(parse_dictionary_com(input()))
+
