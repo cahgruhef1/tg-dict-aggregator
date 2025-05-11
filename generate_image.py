@@ -15,7 +15,7 @@ def generate_image_with_text(word, definition, output_path=None, position="top-r
         "word": word,
         "definition": definition,
         "output_path": output_path,
-        "font_path": "arial-unicode.ttf",
+        "font_path": "arial_unicode.ttf",
         "word_font_ratio": 0.1,
         "def_font_ratio": 0.066,
         "margin_ratio": 0.05,
