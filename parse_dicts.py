@@ -11,7 +11,7 @@ def parse_dictionary_com(word: str):
     definitions = bs.find_all('div', 'NZKOFkdkcvYgD3lqOIJw')
     if len(definitions) != 0:
         definition = definitions[0].text.split('<!-- -->')[0]
-        return definition
+        return definition + '\n Source: dictionary.com'
     raise KeyError("Word not found.")
 
 def parse_merriam_webster(word: str):
@@ -22,7 +22,7 @@ def parse_merriam_webster(word: str):
     definition = bs.find_all("span", "dtText")
     definitions = [re.sub(": ", "", elem.text) for elem in definition]
     if len(definitions) != 0:
-        return "; ".join(definitions)
+        return "; ".join(definitions) + '\n Source: merriam-webster.com'
     raise KeyError("Word not found.")
 
 def parse_oxford(word: str):
@@ -44,7 +44,7 @@ def parse_oxford(word: str):
             else:
                 definition_clear.append(elem.contents[0])
         definitions_clear.append("".join(definition_clear))
-    return "; ".join(definitions_clear)
+    return "; ".join(definitions_clear) + '\n Source: oxfordlearnersdictionaries.com'
 
 def parse_wiktionary(word: str):
     REQUEST_TEMPLATE = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
@@ -53,7 +53,7 @@ def parse_wiktionary(word: str):
         definition = result[0]['meanings'][0]['definitions'][0]['definition']
     except KeyError:
         raise KeyError("Word not found.")
-    return definition
+    return definition '\n Source: wiktionary.com'
 
 if __name__ == "__main__":
     word = input()
