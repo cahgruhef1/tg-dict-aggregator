@@ -80,9 +80,6 @@ def start_subscription(message):
 def unsubscribe(message):
     users[message.chat.id]['subscription']['subscription_status'] = False
     bot.send_message(message.chat.id, 'You have unsubscribed from word of the day.')
-@bot.message_handler(func=lambda message: True)
-def send_default_reply(message):
-	bot.reply_to(message, "Sorry, I don’t understand. Type “/help” for a list of all commands.")
 @bot.message_handler(commands=["select_dicts"])
 dict_list = '\n'.join(["1. meriam-webster.com', '2. dictionary.com', '3. Oxford Learner's dictionary"])
 dict_func_dict = {'1': parse_merriam_webster, '2': parse_dictionary_com, '3': parse_oxford}
@@ -95,6 +92,8 @@ def select_dicts(message):
     selected_functions = [dict_func_dict[number.strip()] for number in selected_numbers]
     users[message.chat.id]['selected_dictionaries'] = selected_functions
 
-
+@bot.message_handler(func=lambda message: True)
+def send_default_reply(message):
+	bot.reply_to(message, "Sorry, I don’t understand. Type “/help” for a list of all commands.")
 
 bot.infinity_polling()
