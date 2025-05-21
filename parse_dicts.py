@@ -25,6 +25,7 @@ def parse_merriam_webster(word: str):
         return "; ".join(definitions) + '\n Source: merriam-webster.com'
     raise KeyError("Word not found.")
 
+
 def parse_oxford(word: str):
     TEMPLATE_URL = "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/"
     HEADERS = {'User-Agent': 'Mozilla/5.0'}
@@ -42,9 +43,13 @@ def parse_oxford(word: str):
             if '<' not in str(elem):
                 definition_clear.append(str(elem))
             else:
-                definition_clear.append(elem.contents[0])
-        definitions_clear.append("".join(definition_clear))
-    return "; ".join(definitions_clear) + '\n Source: oxfordlearnersdictionaries.com'
+                if '<' not in str(elem):
+                    definition_clear.append(str(elem.contents[0]))
+                else:
+                    definition_clear.append(' '+ elem.contents[0].text)
+        definitions_clear.append(re.sub(r'\s{2,}', ' ',"".join(definition_clear)))
+    return "; ".join(definitions_clear)
+
 
 def parse_wiktionary(word: str):
     REQUEST_TEMPLATE = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
