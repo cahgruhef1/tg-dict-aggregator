@@ -20,5 +20,28 @@ def get_vocabulary_definition(word):
         elem_clear = elem.split("\t")[-1].strip()
         if elem and elem_clear not in seen_definitions:
             seen_definitions.add(elem_clear)
-            definitions_clear.append(elem_clear)
-    return(definitions_clear)
+            parent_block_definition = definition.parent
+            if parent_block_definition:
+                synonyms_clear = []
+                synonyms_1 = parent_block_definition.find("span", class_="detail", string="synonyms:")
+                if synonyms_1:
+                    synonyms_2 = synonyms_1.find_next("span")
+                    if synonyms_2:
+                        synonyms = synonyms_2.find_all("a", class_="word")
+                        synonyms_clear = [elem_synonyms.get_text(strip=True) for elem_synonyms in synonyms]
+
+                examples_clear = []
+                examples = parent_block_definition.find_all("div", class_="example")
+                for example in examples:
+                    example_clear = example.get_text(" ", strip=True)
+                    example_clear = example_clear.strip('"')
+                    examples_clear.append(example_clear)
+
+
+            result.append({
+                "definitions": elem_clear,
+                "synonyms": synonyms_clear,
+                "examples": examples_clear,
+            })
+
+    return(result)
