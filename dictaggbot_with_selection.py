@@ -17,7 +17,7 @@ class Word():
         self.antonyms = [] if antonyms is None else antonyms
         self.examples = [] if examples is None else examples
 
-    def get_defs(self, dictionaries=[parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_wiktionary]):
+    def get_defs(self, dictionaries=[parse_dictionary_com, parse_merriam_webster, parse_oxford]):
         for parse_func in dictionaries:
             try:
                 self.defs.append(parse_func(self.word))
@@ -25,9 +25,11 @@ class Word():
                 continue
 
 
-bot = telebot.TeleBot("7933991416:AAGofZGQVe9Gl7GYVkvUaqH0OBS1X6TV6v4", parse_mode="HTML")
+bot = telebot.TeleBot("8028388743:AAHg2hw5U8fSm9CAUQW251p4N1i02vfyK5g", parse_mode="HTML")
 users = {}
-
+dict_list = ["1. meriam-webster.com", "2. dictionary.com", "3. Oxford Learner's dictionary"]
+dict_list = '\n'.join(dict_list)
+dict_func_dict = {'1': parse_merriam_webster, '2': parse_dictionary_com, '3': parse_oxford}
 @bot.message_handler(commands=["start"])
 def start(message):
 	bot.send_message(message.chat.id, "Hi there! This is Telegram Dictionary Aggregator – a bot that compiles information about words from online dictionaries in a user-friendly way. Type “/help” for a list of all commands.")
@@ -74,26 +76,28 @@ def start_subscription(message):
             users[message.chat.id].update({word_of_the_day: Word(word_of_the_day)})
             users[message.chat.id][word_of_the_day].get_defs()
             defs_joined = "\n— ".join(users[message.chat.id][word_of_the_day].defs)
-            bot.send_message(message.chat.id, f"""Here is a list of all definitions:
-            {defs_joined}""", time.sleep(86400))
-@bot.message_handler(commands=["unsubscribe_to_word_of_the_day"])
+            bot.send_message(message.chat.id, f"""Here is a list of all definitions for {word_of_the_day}:
+            {defs_joined}""")
+            users[message.chat.id]['subscription']['word_of_the_day_id'] += 1
+            time.sleep(86400)
+@bot.message_handler(commands=["unsubscribe_from_word_of_the_day"])
 def unsubscribe(message):
     users[message.chat.id]['subscription']['subscription_status'] = False
     bot.send_message(message.chat.id, 'You have unsubscribed from word of the day.')
+    bot.register_next_step_handler(message, start_subscription)
 @bot.message_handler(commands=["select_dicts"])
-dict_list = '\n'.join(["1. meriam-webster.com', '2. dictionary.com', '3. Oxford Learner's dictionary"])
-dict_func_dict = {'1': parse_merriam_webster, '2': parse_dictionary_com, '3': parse_oxford}
 def send_choice(message):
     bot.send_message(message.chat.id, f'Please select definitions from which dictionaries you want to get {dict_list}\n '
                                       f'Write a list of numbers separated by a comma')
-    ot.register_next_step_handler(message, select_dicts)
+    bot.register_next_step_handler(message, select_dicts)
 def select_dicts(message):
     selected_numbers = message.text.split(',')
     selected_functions = [dict_func_dict[number.strip()] for number in selected_numbers]
     users[message.chat.id]['selected_dictionaries'] = selected_functions
-
 @bot.message_handler(func=lambda message: True)
 def send_default_reply(message):
 	bot.reply_to(message, "Sorry, I don’t understand. Type “/help” for a list of all commands.")
+
+
 
 bot.infinity_polling()
