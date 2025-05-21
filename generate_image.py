@@ -213,7 +213,7 @@ def generate_image_with_text(word, definition, output_path=None, position="top-r
 
     return result_image
 
-def get_vocabulary_info(word):
+def get_vocabulary_info_or_first_definition(word):
     url = f"https://www.vocabulary.com/dictionary/{word}"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
@@ -221,13 +221,21 @@ def get_vocabulary_info(word):
         raise KeyError("Info not available.")
     bs = BeautifulSoup(response.text, "html.parser")
     info = bs.find('meta', attrs={'name': 'description'})
-    if len(info) == 0:
-        raise KeyError("Info not found.")
-    return info.get('content')
+    if info:
+        return info.get('content')
+    else:
+        definitions = bs.find('div', class_='definition')
+        if definitions:
+            for child in definitions.children:
+                if child.name != 'div':
+                    first_definition = str(child).strip()
+                    break
+            return first_definition
+        else:
+            raise KeyError("Info not found.")
 
 
 if __name__ == "__main__":
     word = input()
-    info = get_vocabulary_info(word)
-    result = generate_image_with_text(word, info)
+    result = generate_image_with_text(word, get_vocabulary_info_or_first_definition(word))
     result.show()
