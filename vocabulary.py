@@ -20,6 +20,7 @@ def get_vocabulary_definition(word):
         elem_clear = elem.split("\t")[-1].strip()
         if elem and elem_clear not in seen_definitions:
             seen_definitions.add(elem_clear)
+
             parent_block_definition = definition.parent
             if parent_block_definition:
                 synonyms_clear = []
@@ -36,7 +37,6 @@ def get_vocabulary_definition(word):
                     example_clear = example.get_text(" ", strip=True)
                     example_clear = example_clear.strip('"')
                     examples_clear.append(example_clear)
-
 
             result.append({
                 "definitions": elem_clear,
