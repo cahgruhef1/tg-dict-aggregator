@@ -4,7 +4,7 @@ import base64
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 import requests
-import random
+from bs4 import BeautifulSoup
 
 def generate_image_with_text(word, definition, output_path=None, position="top-right"):
     api_key = 'B9458F5B1553027A378FCF195C91F65E'
@@ -212,13 +212,22 @@ def generate_image_with_text(word, definition, output_path=None, position="top-r
     result_image = apply_text_overlay(img, config)
 
     return result_image
-    
-# Пример использования
-dicti = ['гендальф', 'гарри поттер', 'геральт из ривии', 'тоторо', 'золушка', 'железный человек']
-defi = 'герой'
 
-random_word = random.choice(dicti)
+def get_vocabulary_info(word):
+    url = f"https://www.vocabulary.com/dictionary/{word}"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise KeyError("Info not available.")
+    bs = BeautifulSoup(response.text, "html.parser")
+    info = bs.find('meta', attrs={'name': 'description'})
+    if len(info) == 0:
+        raise KeyError("Info not found.")
+    return info.get('content')
 
-result = generate_image_with_text(random_word, defi)
 
-result.show()
+if __name__ == "__main__":
+    word = input()
+    info = get_vocabulary_info(word)
+    result = generate_image_with_text(word, info)
+    result.show()
