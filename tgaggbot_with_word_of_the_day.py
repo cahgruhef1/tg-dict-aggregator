@@ -1,6 +1,6 @@
 import telebot
 from parse_dicts import *
-from test_get_word import *
+from get_word_of_the_day import *
 import time
 
 
