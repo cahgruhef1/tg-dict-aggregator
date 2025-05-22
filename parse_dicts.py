@@ -155,7 +155,7 @@ def parse_collins(word):
         definitions = []
         for definition in definitions_list:
             definitions.append(definition["description"])
-        return ";\n".join(definitions) + "\nSource: Collin's dictionary"
+        return ";\n".join(definitions) + "\nSource: collinsdictionary.com"
     except requests.RequestException as e:
         print(f"Error while trying to get {word}: {e}")
 
