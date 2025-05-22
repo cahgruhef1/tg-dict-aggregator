@@ -160,16 +160,14 @@ def parse_collins(word):
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        raw_dict = eval(str(soup.find("script", type="application/ld+json").contents))[
-            0
-        ].strip()
+        raw_dict = eval(str(soup.find("script", type="application/ld+json").contents))[0].strip()
         definitions_list = json.loads(raw_dict)["hasDefinedTerm"]
         definitions = []
         for definition in definitions_list:
             definitions.append(definition["description"])
-        return ";\n".join(definitions) + "\nSource: Collin's dictionary"
-    except requests.RequestException as e:
-        print(f"Error while trying to get {word}: {e}")
+        return ";\n".join(definitions) + "\nSource: collinsdictionary.com"
+    except (requests.RequestException, AttributeError, IndexError):
+        raise KeyError("Word not found.")
 
 
 def parse_synonyms_collins(word):
@@ -192,8 +190,8 @@ def parse_synonyms_collins(word):
             for synonym in synonym_section.find_all("a"):
                 synonyms.append(synonym.text.strip())
         return [synonym for synonym in synonyms if synonym != ""]
-    except requests.RequestException as e:
-        print(f"Error while trying to get {word}: {e}")
+    except (requests.RequestException, AttributeError, IndexError):
+        raise KeyError("Word not found.")
 
 
 def parse_examples_collins(word):
@@ -213,8 +211,8 @@ def parse_examples_collins(word):
             example_text = example.text.strip()
             examples.append(example_text)
         return [examples[0], examples[1], examples[2]]
-    except requests.RequestException as e:
-        print(f"Error while trying to get {word}: {e}")
+    except (requests.RequestException, AttributeError, IndexError):
+        raise KeyError("Word not found.")
 
 
 if __name__ == "__main__":

@@ -19,6 +19,7 @@ class Word:
     """
     Store word data compiled from various dictionaries
     """
+
     def __init__(
         self,
         word: str,
@@ -150,7 +151,9 @@ def get_word2(message):
     users[message.chat.id][w].get_synonyms()
     users[message.chat.id][w].get_examples()
     if users[message.chat.id][w].defs == []:
-        bot.reply_to(message, "I don’t know this word. Enter another word.")
+        bot.reply_to(message, "I don’t know this word. Enter another word:")
+        bot.register_next_step_handler(message, get_word2)
+        raise KeyError("Word not found.")
     else:
         parts_of_message = []
         defs_joined = "\n— ".join(users[message.chat.id][w].defs)
@@ -188,6 +191,15 @@ def start_subscription(message):
     Subscribe for Word of the Day
     """
     level = message.text
+    if level not in ["a1", "a2", "b1", "b2", "c1"]:
+        bot.send_message(
+            message.chat.id,
+            "I don’t understand. Select a vocabulary level: a1, a2, b1, b2, c1:",
+        )
+        bot.register_next_step_handler(message, start_subscription)
+        raise KeyError("Level not found.")
+    if message.chat.id not in users:
+        users[message.chat.id] = {}
     users[message.chat.id].setdefault(
         "subscription",
         {"levels": [], "subscription_status": True, "word_of_the_day_id": 1},
@@ -225,13 +237,15 @@ def unsubscribe(message):
     """
     Unsubscribe from Word of the Day
     """
+    if message.chat.id not in users:
+        users[message.chat.id] = {}
     users[message.chat.id]["subscription"]["subscription_status"] = False
     bot.send_message(message.chat.id, "You have unsubscribed from word of the day.")
     bot.register_next_step_handler(message, start_subscription)
 
 
 @bot.message_handler(commands=["select_dicts"])
-def send_choice(message):
+def select_dicts(message):
     """
     Get dictionaries from the user
     """
@@ -240,16 +254,19 @@ def send_choice(message):
         f"Please select definitions from which dictionaries you want to get:\n {dict_list}\n "
         f"Write a list of numbers separated by a comma",
     )
-    bot.register_next_step_handler(message, select_dicts)
+    bot.register_next_step_handler(message, save_choice)
 
 
-def select_dicts(message):
+def save_choice(message):
     """
     Select dictionaries to use
     """
+    if message.chat.id not in users:
+        users[message.chat.id] = {}
     selected_numbers = message.text.split(",")
     selected_functions = [dict_func_dict[number.strip()] for number in selected_numbers]
     users[message.chat.id]["selected_dictionaries"] = selected_functions
+    bot.send_message(message.chat.id, "Dictionaries saved.")
 
 
 @bot.message_handler(func=lambda message: True)
