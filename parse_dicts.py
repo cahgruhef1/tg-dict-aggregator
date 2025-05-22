@@ -129,6 +129,23 @@ def parse_wiktionary(word: str):
     return definition + "\n Source: wiktionary.com"
 
 
+def parse_synonyms_collins(word):
+    REQUEST_URL = f"https://www.collinsdictionary.com/dictionary/english-thesaurus/{word}"
+    try:
+        headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = requests.get(REQUEST_URL, headers=headers)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        synonyms = []
+        synonym_section = soup.find("div", class_="synonyms")
+        if synonym_section:
+            for synonym in synonym_section.find_all("a"):
+                synonyms.append(synonym.text.strip())
+        return [synonym for synonym in synonyms if synonym != '']
+    except requests.RequestException as e:
+        print(f"Error while trying to get {word}: {e}")
+        
+
 if __name__ == "__main__":
     word = input()
     print(parse_dictionary_com(word))
