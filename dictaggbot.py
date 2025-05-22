@@ -2,18 +2,24 @@ import os
 import telebot
 import time
 import uuid
-from parse_dicts import *
-from get_word_of_the_day import *
-from generate_image import *
+from parse_dicts import parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary, parse_synonyms_collins, parse_examples_collins
+from get_word_of_the_day import get_word_of_the_day
+from generate_image import generate_image_with_text, get_vocabulary_info
 
 
 class Word():
+    """
+    Store word data compiled from various dictionaries
+    """
 
     def __init__(self, word: str,
                        defs: list = None,
                        synonyms: list = None,
                        antonyms: list = None,
                        examples: list = None):
+        """
+        Initialize class
+        """
         self.word = word
         self.defs = [] if defs is None else defs
         self.synonyms = [] if synonyms is None else synonyms
@@ -21,14 +27,28 @@ class Word():
         self.examples = [] if examples is None else examples
 
     def get_defs(self, dictionaries=[parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary]):
+        """
+        Compile dictionaries
+        """
+
         for parse_func in dictionaries:
             try:
                 self.defs.append(parse_func(self.word))
             except KeyError:
                 continue
+
     def get_synonyms(self):
+        """
+        Get synonyms
+        """
+
         self.synonyms.extend(parse_synonyms_collins(self.word))
+
     def get_examples(self):
+        """
+        Get examples
+        """
+
         try:
             self.examples.extend(parse_examples_collins(self.word))
         except KeyError:
@@ -45,11 +65,19 @@ dict_func_dict = {"1": parse_merriam_webster, "2": parse_dictionary_com, "3": pa
 
 @bot.message_handler(commands=["start"])
 def start(message):
-	bot.send_message(message.chat.id, "Hi there! This is Telegram Dictionary Aggregator – a bot that compiles information about words from online dictionaries in a user-friendly way. Type “/help” for a list of all commands.")
+    """
+    Send start message
+    """
+
+    bot.send_message(message.chat.id, "Hi there! This is Telegram Dictionary Aggregator – a bot that compiles information about words from online dictionaries in a user-friendly way. Type “/help” for a list of all commands.")
 
 
 @bot.message_handler(commands=["help"])
 def get_help(message):
+    """
+    Get list of commands
+    """
+
     bot.send_message(message.chat.id, """Here is a list of the available commands:
 1) /start – start the bot,
 2) /help – get a list of all available commands,
@@ -61,6 +89,10 @@ def get_help(message):
 
 @bot.message_handler(commands=["get_word"])
 def get_word(message):
+    """
+    Get input word
+    """
+
     bot.send_message(message.chat.id, "Enter a word to get its definitions:")
     if message.chat.id not in users:
         users[message.chat.id] = {}
@@ -68,6 +100,10 @@ def get_word(message):
 
 
 def get_word2(message):
+    """
+    Send word definitions, synonyms, examples, and generated images
+    """
+
     w = message.text
     users[message.chat.id].update({w: Word(w)})
     users[message.chat.id].setdefault("selected_dictionaries", [parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary])
@@ -79,7 +115,7 @@ def get_word2(message):
     else:
         parts_of_message = []
         defs_joined = "\n— ".join(users[message.chat.id][w].defs)
-        defs_message  = f"""Here is a list of all definitions: \n—
+        defs_message = f"""Here is a list of all definitions: \n—
 {defs_joined}"""
         parts_of_message.append(defs_message)
         if len(users[message.chat.id][w].synonyms) != 0:
@@ -99,6 +135,10 @@ def get_word2(message):
 
 @bot.message_handler(commands=["subscribe_wotd"])
 def get_level(message):
+    """
+    Select a level for Word of the Day
+    """
+
     bot.send_message(message.chat.id, "Select a vocabulary level: a1, a2, b1, b2, c1:")
     if message.chat.id not in users:
         users[message.chat.id] = {}
@@ -106,6 +146,10 @@ def get_level(message):
 
 
 def start_subscription(message):
+    """
+    Subscribe for Word of the Day
+    """
+
     level = message.text
     users[message.chat.id].setdefault("subscription", {"levels": [], "subscription_status": True, "word_of_the_day_id": 1})
     users[message.chat.id]["subscription"]["levels"].append(level)
@@ -127,6 +171,10 @@ def start_subscription(message):
 
 @bot.message_handler(commands=["unsubscribe_wotd"])
 def unsubscribe(message):
+    """
+    Unsubscribe from Word of the Day
+    """
+
     users[message.chat.id]["subscription"]["subscription_status"] = False
     bot.send_message(message.chat.id, "You have unsubscribed from word of the day.")
     bot.register_next_step_handler(message, start_subscription)
@@ -134,12 +182,20 @@ def unsubscribe(message):
 
 @bot.message_handler(commands=["select_dicts"])
 def send_choice(message):
+    """
+    Get dictionaries from the user
+    """
+
     bot.send_message(message.chat.id, f"Please select definitions from which dictionaries you want to get:\n {dict_list}\n "
                                       f"Write a list of numbers separated by a comma")
     bot.register_next_step_handler(message, select_dicts)
 
 
 def select_dicts(message):
+    """
+    Select dictionaries to use
+    """
+
     selected_numbers = message.text.split(",")
     selected_functions = [dict_func_dict[number.strip()] for number in selected_numbers]
     users[message.chat.id]["selected_dictionaries"] = selected_functions
@@ -147,7 +203,11 @@ def select_dicts(message):
 
 @bot.message_handler(func=lambda message: True)
 def send_default_reply(message):
-	bot.reply_to(message, "Sorry, I don’t understand. Type “/help” for a list of all commands.")
+    """
+    Send default reply
+    """
+
+    bot.reply_to(message, "Sorry, I don’t understand. Type “/help” for a list of all commands.")
 
 
 bot.infinity_polling()
