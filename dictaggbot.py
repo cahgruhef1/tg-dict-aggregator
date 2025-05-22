@@ -1,8 +1,10 @@
+import os
 import telebot
+import time
+import uuid
 from parse_dicts import *
 from get_word_of_the_day import *
 from generate_image import *
-import time
 
 
 class Word():
@@ -51,7 +53,10 @@ def get_help(message):
     bot.send_message(message.chat.id, """Here is a list of the available commands:
 1) /start – start the bot,
 2) /help – get a list of all available commands,
-3) /get_word – get the definition of a word from different dictionaries.""")
+3) /get_word – get the definition of a word from different dictionaries,
+4) /subscribe_wotd - subscribe for word of the day,
+5) /unsubscribe_wotd - unsubscribe from word of the day,
+6) /select_dicts - choose which dictionaries to use.""")
 
 
 @bot.message_handler(commands=["get_word"])
@@ -86,13 +91,15 @@ def get_word2(message):
             examples_message = f"Here are examples with your word: \n—{examples_joined}"
             parts_of_message.append(examples_message)
         bot.reply_to(message, "\n\n".join(parts_of_message))
-        generate_image_with_text(w, get_vocabulary_info(w), f"./{w}.png")
-        bot.send_photo(message.chat.id, photo=open(f"./{w}.png", "rb"))
+        img_uuid = str(uuid.uuid4())
+        generate_image_with_text(w, get_vocabulary_info(w), f"./{w}_{img_uuid}.png")
+        bot.send_photo(message.chat.id, photo=open(f"./{w}_{img_uuid}.png", "rb"))
+        os.remove(f"./{w}_{img_uuid}.png")
 
 
 @bot.message_handler(commands=["subscribe_wotd"])
 def get_level(message):
-    bot.send_message(message.chat.id, "Select a vocabulary level: a1, a2, b1, b2, c1")
+    bot.send_message(message.chat.id, "Select a vocabulary level: a1, a2, b1, b2, c1:")
     if message.chat.id not in users:
         users[message.chat.id] = {}
     bot.register_next_step_handler(message, start_subscription)
@@ -111,8 +118,10 @@ def start_subscription(message):
             bot.send_message(message.chat.id, f"""Here is a list of all definitions for {word_of_the_day}:
             {defs_joined}""")
             users[message.chat.id]["subscription"]["word_of_the_day_id"] += 1
-            generate_image_with_text(word_of_the_day, get_vocabulary_info(word_of_the_day), f"./{word_of_the_day}.png")
-            bot.send_photo(message.chat.id, photo=open(f"./{word_of_the_day}.png", "rb"))
+            img_uuid = str(uuid.uuid4())
+            generate_image_with_text(word_of_the_day, get_vocabulary_info(word_of_the_day), f"./{word_of_the_day}_{img_uuid}.png")
+            bot.send_photo(message.chat.id, photo=open(f"./{word_of_the_day}_{img_uuid}.png", "rb"))
+            os.remove(f"./{word_of_the_day}_{img_uuid}.png")
             time.sleep(86400)
 
 
