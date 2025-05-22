@@ -4,7 +4,7 @@ import json
 
 def get_word_of_the_day(id, level):
     """
-    Get word of the day
+    Get Word of the Day
     """
     REQUEST_URL = f"https://raw.githubusercontent.com/cahgruhef1/tg-dict-aggregator/refs/heads/main/{level}_word_list.json"
     response = requests.get(REQUEST_URL)
@@ -19,4 +19,3 @@ def get_word_of_the_day(id, level):
 
 if __name__ == "__main__":
     print(get_word_of_the_day(8, "b1"))
-

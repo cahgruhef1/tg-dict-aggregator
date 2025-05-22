@@ -38,7 +38,9 @@ def parse_oxford(word: str):
     """
     Parse oxfordlearnersdictionaries.com
     """
-    TEMPLATE_URL = "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/"
+    TEMPLATE_URL = (
+        "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/"
+    )
     HEADERS = {"User-Agent": "Mozilla/5.0"}
     request = TEMPLATE_URL + word.lower()
     response = requests.get(request, headers=HEADERS)
@@ -64,9 +66,8 @@ def parse_oxford(word: str):
 
 def parse_vocabulary(word):
     """
-    Get a definition from vocabulary.com
+    Parse vocabulary.com
     """
-    result = []
     url = f"https://www.vocabulary.com/dictionary/{word}"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
@@ -74,7 +75,11 @@ def parse_vocabulary(word):
         raise KeyError("Word not available.")
     bs = BeautifulSoup(response.text, "html.parser")
     definitions = bs.find_all("div", class_="definition")
-    definitions = [definition for definition in definitions if definition.find_all("div", class_="pos-icon")]
+    definitions = [
+        definition
+        for definition in definitions
+        if definition.find_all("div", class_="pos-icon")
+    ]
     if len(definitions) == 0:
         raise KeyError("Word not found.")
     seen_definitions = set()
@@ -90,12 +95,17 @@ def parse_vocabulary(word):
             parent_block_definition = definition.parent
             if parent_block_definition:
                 synonyms_clear = []
-                synonyms_1 = parent_block_definition.find("span", class_="detail", string="synonyms:")
+                synonyms_1 = parent_block_definition.find(
+                    "span", class_="detail", string="synonyms:"
+                )
                 if synonyms_1:
                     synonyms_2 = synonyms_1.find_next("span")
                     if synonyms_2:
                         synonyms = synonyms_2.find_all("a", class_="word")
-                        synonyms_clear = [elem_synonyms.get_text(strip=True) for elem_synonyms in synonyms]
+                        synonyms_clear = [
+                            elem_synonyms.get_text(strip=True)
+                            for elem_synonyms in synonyms
+                        ]
 
                 examples_clear = []
                 examples = parent_block_definition.find_all("div", class_="example")
@@ -111,10 +121,18 @@ def parse_vocabulary(word):
             if examples_clear is not None:
                 res_ex.append(". ".join(examples_clear))
 
-    return "Definitions: " + "; ".join(res_defs) + "\n" + \
-           "Synonyms: " + "; ".join(res_syn) + "\n" + \
-           "Examples: " + "; ".join(res_ex) + "\n" + \
-           "Source: vocabulary.com"
+    return (
+        "Definitions: "
+        + "; ".join(res_defs)
+        + "\n"
+        + "Synonyms: "
+        + "; ".join(res_syn)
+        + "\n"
+        + "Examples: "
+        + "; ".join(res_ex)
+        + "\n"
+        + "Source: vocabulary.com"
+    )
 
 
 def parse_wiktionary(word: str):
@@ -131,13 +149,20 @@ def parse_wiktionary(word: str):
 
 
 def parse_collins(word):
+    """
+    Parse Collins Dictionary
+    """
     REQUEST_URL = f"https://www.collinsdictionary.com/dictionary/english/{word}"
     try:
-        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+        }
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        raw_dict = eval(str(soup.find("script", type="application/ld+json").contents))[0].strip()
+        raw_dict = eval(str(soup.find("script", type="application/ld+json").contents))[
+            0
+        ].strip()
         definitions_list = json.loads(raw_dict)["hasDefinedTerm"]
         definitions = []
         for definition in definitions_list:
@@ -148,9 +173,16 @@ def parse_collins(word):
 
 
 def parse_synonyms_collins(word):
-    REQUEST_URL = f"https://www.collinsdictionary.com/dictionary/english-thesaurus/{word}"
+    """
+    Parse Collins Dictionary synonyms
+    """
+    REQUEST_URL = (
+        f"https://www.collinsdictionary.com/dictionary/english-thesaurus/{word}"
+    )
     try:
-        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+        }
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -162,12 +194,17 @@ def parse_synonyms_collins(word):
         return [synonym for synonym in synonyms if synonym != ""]
     except requests.RequestException as e:
         print(f"Error while trying to get {word}: {e}")
-        
+
 
 def parse_examples_collins(word):
+    """
+    Parse Collins Dictionary examples
+    """
     REQUEST_URL = f"https://www.collinsdictionary.com/sentences/english/{word}"
     try:
-        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+        }
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -190,4 +227,3 @@ if __name__ == "__main__":
     print(parse_synonyms_collins(word))
     print(parse_examples_collins(word))
     print(parse_wiktionary(word))
-
