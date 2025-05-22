@@ -83,9 +83,7 @@ def parse_vocabulary(word):
     if len(definitions) == 0:
         raise KeyError("Word not found.")
     seen_definitions = set()
-    res_defs = []
-    res_syn = []
-    res_ex = []
+    result = []
     for definition in definitions:
         elem = definition.get_text(separator=" --- ", strip=True)
         elem_clear = elem.split("\t")[-1].strip()
