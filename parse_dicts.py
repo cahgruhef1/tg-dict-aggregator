@@ -87,7 +87,7 @@ def parse_vocabulary(word):
     res_syn = []
     res_ex = []
     for definition in definitions:
-        elem = definition.get_text(separator=": ", strip=True)
+        elem = definition.get_text(separator=" --- ", strip=True)
         elem_clear = elem.split("\t")[-1].strip()
         if elem and elem_clear not in seen_definitions:
             seen_definitions.add(elem_clear)
@@ -114,25 +114,15 @@ def parse_vocabulary(word):
                     example_clear = example_clear.strip('"')
                     examples_clear.append(example_clear)
 
-            if elem_clear is not None:
-                res_defs.append(elem_clear)
-            if synonyms_clear is not None:
-                res_syn.append(", ".join(synonyms_clear))
-            if examples_clear is not None:
-                res_ex.append(". ".join(examples_clear))
+            result.append(
+                f"Definition: {elem_clear}\n"
+                f"Synonyms: {', '.join(synonyms_clear) if synonyms_clear else 'no synonyms found'}\n"
+                f"Examples: {' | '.join(examples_clear) if examples_clear else 'no examples found'}\n"
+            )
+    result = "\n".join(result)
+    result += "Source: vocabulary.com"
 
-    return (
-        "Definitions: "
-        + "; ".join(res_defs)
-        + "\n"
-        + "Synonyms: "
-        + "; ".join(res_syn)
-        + "\n"
-        + "Examples: "
-        + "; ".join(res_ex)
-        + "\n"
-        + "Source: vocabulary.com"
-    )
+    return (result)
 
 
 def parse_wiktionary(word: str):
