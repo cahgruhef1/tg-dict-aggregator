@@ -91,6 +91,8 @@ def start_subscription(message):
             bot.send_message(message.chat.id, f"""Here is a list of all definitions for {word_of_the_day}:
             {defs_joined}""")
             users[message.chat.id]["subscription"]["word_of_the_day_id"] += 1
+            generate_image_with_text(word_of_the_day, get_vocabulary_info(word_of_the_day))
+            bot.send_photo(message.chat.id, photo=open("./image.png", "rb"))
             time.sleep(86400)
 
 
