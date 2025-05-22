@@ -86,11 +86,11 @@ def get_word2(message):
             examples_message = f"Here are examples with your word: \n—{examples_joined}"
             parts_of_message.append(examples_message)
         bot.reply_to(message, "\n\n".join(parts_of_message))
-	    generate_image_with_text(w, get_vocabulary_info(w), f"./{w}.png")
+        generate_image_with_text(w, get_vocabulary_info(w), f"./{w}.png")
         bot.send_photo(message.chat.id, photo=open(f"./{w}.png", "rb"))
 
 
-@bot.message_handler(commands=["subscribe_to_word_of_the_day"])
+@bot.message_handler(commands=["subscribe_wotd"])
 def get_level(message):
     bot.send_message(message.chat.id, "Select a vocabulary level: a1, a2, b1, b2, c1")
     if message.chat.id not in users:
@@ -116,7 +116,7 @@ def start_subscription(message):
             time.sleep(86400)
 
 
-@bot.message_handler(commands=["unsubscribe_from_word_of_the_day"])
+@bot.message_handler(commands=["unsubscribe_wotd"])
 def unsubscribe(message):
     users[message.chat.id]["subscription"]["subscription_status"] = False
     bot.send_message(message.chat.id, "You have unsubscribed from word of the day.")

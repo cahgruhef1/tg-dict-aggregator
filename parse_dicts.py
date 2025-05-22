@@ -175,7 +175,7 @@ def parse_examples_collins(word):
         for example in soup.find_all("div", class_="example"):
             example_text = example.text.strip()
             examples.append(example_text)
-        return examples
+        return [examples[0], examples[1], examples[2]]
     except requests.RequestException as e:
         print(f"Error while trying to get {word}: {e}")
 
