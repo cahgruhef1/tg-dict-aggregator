@@ -191,13 +191,13 @@ def start_subscription(message):
     Subscribe for Word of the Day
     """
     level = message.text
-    if level not in ["a1", "a2", "b1", "b2", "c1"]:
-        bot.send_message(
-            message.chat.id,
-            "I don’t understand. Select a vocabulary level: a1, a2, b1, b2, c1:",
-        )
-        bot.register_next_step_handler(message, start_subscription)
-        raise KeyError("Level not found.")
+    # if level not in ["a1", "a2", "b1", "b2", "c1"]:
+    #     bot.send_message(
+    #         message.chat.id,
+    #         "I don’t understand. Select a vocabulary level: a1, a2, b1, b2, c1:",
+    #     )
+    #     bot.register_next_step_handler(message, start_subscription)
+    #     raise KeyError("Level not found.")
     if message.chat.id not in users:
         users[message.chat.id] = {}
     users[message.chat.id].setdefault(
