@@ -1,6 +1,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
+import json
 
 
 def parse_dictionary_com(word: str):
