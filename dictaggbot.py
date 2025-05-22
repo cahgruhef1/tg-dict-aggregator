@@ -105,7 +105,7 @@ def unsubscribe(message):
 
 @bot.message_handler(commands=["select_dicts"])
 def send_choice(message):
-    bot.send_message(message.chat.id, f"Please select definitions from which dictionaries you want to get {dict_list}\n "
+    bot.send_message(message.chat.id, f"Please select definitions from which dictionaries you want to get:\n {dict_list}\n "
                                       f"Write a list of numbers separated by a comma")
     bot.register_next_step_handler(message, select_dicts)
 
