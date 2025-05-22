@@ -28,13 +28,13 @@ generate_image.py - Fusion Brain image generation framework
 
 Resources:\
 telebot API docs:\
-https://pytba.readthedocs.io/en/latest/index.html\
-https://pypi.org/project/pyTelegramBotAPI/
+https://pytba.readthedocs.io/en/latest/index.html \
+https://pypi.org/project/pyTelegramBotAPI
 
 Fusion Brain image generation network:\
-https://fusionbrain.ai/
+https://fusionbrain.ai
 
 BeatifulSoup4 parsing:\
-https://beautiful-soup-4.readthedocs.io/en/latest/\
+https://beautiful-soup-4.readthedocs.io/en/latest/ \
 https://pypi.org/project/beautifulsoup4/
 
