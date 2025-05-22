@@ -35,6 +35,6 @@ Fusion Brain image generation network:\
 https://fusionbrain.ai
 
 BeatifulSoup4 parsing:\
-https://beautiful-soup-4.readthedocs.io/en/latest/ \
-https://pypi.org/project/beautifulsoup4/
+https://beautiful-soup-4.readthedocs.io/en/latest \
+https://pypi.org/project/beautifulsoup4
 
