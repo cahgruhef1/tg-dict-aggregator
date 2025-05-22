@@ -24,6 +24,13 @@ class Word():
                 self.defs.append(parse_func(self.word))
             except KeyError:
                 continue
+    def get_synonyms(self):
+        self.synonyms.extend(parse_synonyms_collins(self.word))
+    def get_examples(self):
+        try:
+            self.examples.extend(parse_examples_collins(self.word))
+        except KeyError:
+            pass
 
 
 bot = telebot.TeleBot("", parse_mode="HTML")
@@ -58,16 +65,27 @@ def get_word(message):
 def get_word2(message):
     w = message.text
     users[message.chat.id].update({w: Word(w)})
-    users[message.chat.id].setdefault("selected_dictionaries", [parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_vocabulary])
-    users[message.chat.id][w].get_defs(users[message.chat.id]["selected_dictionaries"])
+    users[message.chat.id].setdefault('selected_dictionaries', [parse_dictionary_com, parse_merriam_webster, parse_oxford])
+    users[message.chat.id][w].get_defs(users[message.chat.id]['selected_dictionaries'])
+    users[message.chat.id][w].get_synonyms()
+    users[message.chat.id][w].get_examples()
     if users[message.chat.id][w].defs == []:
         bot.reply_to(message, "I don’t know this word. Enter another word.")
     else:
+        parts_of_message = []
         defs_joined = "\n— ".join(users[message.chat.id][w].defs)
-        bot.reply_to(message, f"""Here is a list of all definitions:
-{defs_joined}""")
-        generate_image_with_text(w, get_vocabulary_info(w))
-        bot.send_photo(message.chat.id, photo=open("./image.png", "rb"))
+        defs_message  = f"""Here is a list of all definitions: \n—
+{defs_joined}"""
+        parts_of_message.append(defs_message)
+        if len(users[message.chat.id][w].synonyms) != 0:
+            synonyms_joined = '\n—'.join(users[message.chat.id][w].synonyms)
+            synonyms_message = f'Here are synonyms to your word: \n—{synonyms_joined}'
+            parts_of_message.append(synonyms_message)
+        if len(users[message.chat.id][w].examples) != 0:
+            examples_joined = '\n—'.join(users[message.chat.id][w].examples)
+            examples_message = f'Here are examples with your word: \n—{examples_joined}'
+            parts_of_message.append(examples_message)
+        bot.reply_to(message, '\n\n'.join(parts_of_message))
 
 
 @bot.message_handler(commands=["subscribe_to_word_of_the_day"])
