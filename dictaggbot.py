@@ -77,7 +77,7 @@ users = {}
 dict_list = [
     "1. meriam-webster.com",
     "2. dictionary.com",
-    "3. Oxford Learner's dictionary",
+    "3. Oxford Learner’s dictionary",
     "4. vocabulary.com",
     "5. Collins dictionary",
 ]
