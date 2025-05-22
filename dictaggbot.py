@@ -26,7 +26,7 @@ class Word():
                 continue
 
 
-bot = telebot.TeleBot("8028388743:AAHg2hw5U8fSm9CAUQW251p4N1i02vfyK5g", parse_mode="HTML")
+bot = telebot.TeleBot("", parse_mode="HTML")
 users = {}
 
 dict_list = ["1. meriam-webster.com", "2. dictionary.com", "3. Oxford Learner's dictionary", "4. vocabulary.com"]
