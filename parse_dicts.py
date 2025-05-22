@@ -58,7 +58,7 @@ def parse_oxford(word: str):
                 else:
                     definition_clear.append(" " + elem.contents[0].text)
         definitions_clear.append(re.sub(r"\s{2,}", " ", "".join(definition_clear)))
-    return "; ".join(definitions_clear)
+    return "; ".join(definitions_clear) + "\n Source: oxfordlearnersdictionaries.com"
 
 
 def parse_vocabulary(word):
@@ -77,6 +77,9 @@ def parse_vocabulary(word):
     if len(definitions) == 0:
         raise KeyError("Word not found.")
     seen_definitions = set()
+    res_defs = []
+    res_syn = []
+    res_ex = []
     for definition in definitions:
         elem = definition.get_text(separator=": ", strip=True)
         elem_clear = elem.split("\t")[-1].strip()
@@ -100,13 +103,17 @@ def parse_vocabulary(word):
                     example_clear = example_clear.strip('"')
                     examples_clear.append(example_clear)
 
-            result.append({
-                "definitions": elem_clear,
-                "synonyms": synonyms_clear,
-                "examples": examples_clear,
-            })
+            if elem_clear is not None:
+                res_defs.append(elem_clear)
+            if synonyms_clear is not None:
+                res_syn.append(", ".join(synonyms_clear))
+            if examples_clear is not None:
+                res_ex.append(". ".join(examples_clear))
 
-    return (result)
+    return "Definitions: " + "; ".join(res_defs) + "\n" + \
+           "Synonyms: " + "; ".join(res_syn) + "\n" + \
+           "Examples: " + "; ".join(res_ex) + "\n" + \
+           "Source: vocabulary.com"
 
 
 def parse_wiktionary(word: str):
