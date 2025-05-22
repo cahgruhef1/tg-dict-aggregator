@@ -86,6 +86,8 @@ def get_word2(message):
             examples_message = f'Here are examples with your word: \n—{examples_joined}'
             parts_of_message.append(examples_message)
         bot.reply_to(message, '\n\n'.join(parts_of_message))
+	generate_image_with_text(w, get_vocabulary_info(w))
+        bot.send_photo(message.chat.id, photo=open("./image.png", "rb"))
 
 
 @bot.message_handler(commands=["subscribe_to_word_of_the_day"])
