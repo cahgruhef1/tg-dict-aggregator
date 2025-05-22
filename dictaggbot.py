@@ -29,9 +29,9 @@ class Word():
 bot = telebot.TeleBot("", parse_mode="HTML")
 users = {}
 
-dict_list = ["1. meriam-webster.com", "2. dictionary.com", "3. Oxford Learner's dictionary", "4. vocabulary.com"]
+dict_list = ["1. meriam-webster.com", "2. dictionary.com", "3. Oxford Learner's dictionary", "4. vocabulary.com", "5. Collins dictionary"]
 dict_list = "\n".join(dict_list)
-dict_func_dict = {"1": parse_merriam_webster, "2": parse_dictionary_com, "3": parse_oxford, "4": parse_vocabulary}
+dict_func_dict = {"1": parse_merriam_webster, "2": parse_dictionary_com, "3": parse_oxford, "4": parse_vocabulary, "5": parse_collins}
 
 
 @bot.message_handler(commands=["start"])
