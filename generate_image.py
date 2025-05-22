@@ -292,4 +292,4 @@ def get_vocabulary_info(word):
 
 if __name__ == "__main__":
     word = input()
-    result = generate_image_with_text(word, get_vocabulary_info(word))
+    generate_image_with_text(word, get_vocabulary_info(word), f"./{word}.png")

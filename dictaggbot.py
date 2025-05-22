@@ -65,8 +65,8 @@ def get_word(message):
 def get_word2(message):
     w = message.text
     users[message.chat.id].update({w: Word(w)})
-    users[message.chat.id].setdefault('selected_dictionaries', [parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary])
-    users[message.chat.id][w].get_defs(users[message.chat.id]['selected_dictionaries'])
+    users[message.chat.id].setdefault("selected_dictionaries", [parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary])
+    users[message.chat.id][w].get_defs(users[message.chat.id]["selected_dictionaries"])
     users[message.chat.id][w].get_synonyms()
     users[message.chat.id][w].get_examples()
     if users[message.chat.id][w].defs == []:
@@ -78,16 +78,16 @@ def get_word2(message):
 {defs_joined}"""
         parts_of_message.append(defs_message)
         if len(users[message.chat.id][w].synonyms) != 0:
-            synonyms_joined = '\n—'.join(users[message.chat.id][w].synonyms)
-            synonyms_message = f'Here are synonyms to your word: \n—{synonyms_joined}'
+            synonyms_joined = "\n—".join(users[message.chat.id][w].synonyms)
+            synonyms_message = f"Here are synonyms to your word: \n—{synonyms_joined}"
             parts_of_message.append(synonyms_message)
         if len(users[message.chat.id][w].examples) != 0:
-            examples_joined = '\n—'.join(users[message.chat.id][w].examples)
-            examples_message = f'Here are examples with your word: \n—{examples_joined}'
+            examples_joined = "\n—".join(users[message.chat.id][w].examples)
+            examples_message = f"Here are examples with your word: \n—{examples_joined}"
             parts_of_message.append(examples_message)
-        bot.reply_to(message, '\n\n'.join(parts_of_message))
-	generate_image_with_text(w, get_vocabulary_info(w))
-        bot.send_photo(message.chat.id, photo=open("./image.png", "rb"))
+        bot.reply_to(message, "\n\n".join(parts_of_message))
+	    generate_image_with_text(w, get_vocabulary_info(w), f"./{w}.png")
+        bot.send_photo(message.chat.id, photo=open(f"./{w}.png", "rb"))
 
 
 @bot.message_handler(commands=["subscribe_to_word_of_the_day"])
@@ -111,8 +111,8 @@ def start_subscription(message):
             bot.send_message(message.chat.id, f"""Here is a list of all definitions for {word_of_the_day}:
             {defs_joined}""")
             users[message.chat.id]["subscription"]["word_of_the_day_id"] += 1
-            generate_image_with_text(word_of_the_day, get_vocabulary_info(word_of_the_day))
-            bot.send_photo(message.chat.id, photo=open("./image.png", "rb"))
+            generate_image_with_text(word_of_the_day, get_vocabulary_info(word_of_the_day), f"./{word_of_the_day}.png")
+            bot.send_photo(message.chat.id, photo=open(f"./{word_of_the_day}.png", "rb"))
             time.sleep(86400)
 
 

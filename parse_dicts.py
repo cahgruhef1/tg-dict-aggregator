@@ -133,16 +133,16 @@ def parse_wiktionary(word: str):
 def parse_collins(word):
     REQUEST_URL = f"https://www.collinsdictionary.com/dictionary/english/{word}"
     try:
-        headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        raw_dict = eval(str(soup.find('script', type='application/ld+json').contents))[0].strip()
-        definitions_list = json.loads(raw_dict)['hasDefinedTerm']
+        raw_dict = eval(str(soup.find("script", type="application/ld+json").contents))[0].strip()
+        definitions_list = json.loads(raw_dict)["hasDefinedTerm"]
         definitions = []
         for definition in definitions_list:
-            definitions.append(definition['description'])
-        return ';\n'.join(definitions) + "\nSource: Collin's dictionary"
+            definitions.append(definition["description"])
+        return ";\n".join(definitions) + "\nSource: Collin's dictionary"
     except requests.RequestException as e:
         print(f"Error while trying to get {word}: {e}")
 
@@ -150,7 +150,7 @@ def parse_collins(word):
 def parse_synonyms_collins(word):
     REQUEST_URL = f"https://www.collinsdictionary.com/dictionary/english-thesaurus/{word}"
     try:
-        headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -159,7 +159,7 @@ def parse_synonyms_collins(word):
         if synonym_section:
             for synonym in synonym_section.find_all("a"):
                 synonyms.append(synonym.text.strip())
-        return [synonym for synonym in synonyms if synonym != '']
+        return [synonym for synonym in synonyms if synonym != ""]
     except requests.RequestException as e:
         print(f"Error while trying to get {word}: {e}")
         
@@ -167,7 +167,7 @@ def parse_synonyms_collins(word):
 def parse_examples_collins(word):
     REQUEST_URL = f"https://www.collinsdictionary.com/sentences/english/{word}"
     try:
-        headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        headers={"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
         response = requests.get(REQUEST_URL, headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -186,5 +186,8 @@ if __name__ == "__main__":
     print(parse_merriam_webster(word))
     print(parse_oxford(word))
     print(parse_vocabulary(word))
+    print(parse_collins(word))
+    print(parse_synonyms_collins(word))
+    print(parse_examples_collins(word))
     print(parse_wiktionary(word))
 
