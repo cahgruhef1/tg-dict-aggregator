@@ -15,7 +15,7 @@ List of the available commands:
 5) /unsubscribe_wotd - unsubscribe from word of the day,
 6) /select_dicts - choose which dictionaries to use.
 
-Team:
+Team:\
 Timofey Fomichev, @cahgruhef1\
 Yakov Lvovsky, @jacoblvovski\
 Anastasia Shvets, @AnShvts\
