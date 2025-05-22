@@ -146,6 +146,22 @@ def parse_synonyms_collins(word):
         print(f"Error while trying to get {word}: {e}")
         
 
+def parse_examples_collins(word):
+    REQUEST_URL = f"https://www.collinsdictionary.com/sentences/english/{word}"
+    try:
+        headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = requests.get(REQUEST_URL, headers=headers)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        examples = []
+        for example in soup.find_all("div", class_="example"):
+            example_text = example.text.strip()
+            examples.append(example_text)
+        return examples
+    except requests.RequestException as e:
+        print(f"Error while trying to get {word}: {e}")
+
+
 if __name__ == "__main__":
     word = input()
     print(parse_dictionary_com(word))
