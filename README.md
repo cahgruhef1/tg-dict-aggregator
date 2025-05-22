@@ -7,7 +7,7 @@ Get started by cloning this repository and trying it out for yourself!
 Bot:\
 @DictAggregatorBot
 
-List of the available commands:\
+List of the available commands:
 1) /start – start the bot,
 2) /help – get a list of all available commands,
 3) /get_word – get the definition of a word from different dictionaries,
