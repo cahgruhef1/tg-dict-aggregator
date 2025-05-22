@@ -18,7 +18,7 @@ class Word():
         self.antonyms = [] if antonyms is None else antonyms
         self.examples = [] if examples is None else examples
 
-    def get_defs(self, dictionaries=[parse_dictionary_com, parse_merriam_webster, parse_oxford]):
+    def get_defs(self, dictionaries=[parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary]):
         for parse_func in dictionaries:
             try:
                 self.defs.append(parse_func(self.word))
