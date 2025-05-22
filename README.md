@@ -13,7 +13,7 @@ Irina Golikova, @Irina8820
 Repository structure:
 dictaggbot.py - Telegram bot framework using telebot API\
 parse_dicts.py - functions for parsing different dictionaries using requests and BeautifulSoup4\
-generate_image.py - Fusion Brain image generation framework\
+generate_image.py - Fusion Brain image generation framework
 
 Resources:
 
