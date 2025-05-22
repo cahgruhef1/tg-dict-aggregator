@@ -65,7 +65,7 @@ def get_word(message):
 def get_word2(message):
     w = message.text
     users[message.chat.id].update({w: Word(w)})
-    users[message.chat.id].setdefault('selected_dictionaries', [parse_dictionary_com, parse_merriam_webster, parse_oxford])
+    users[message.chat.id].setdefault('selected_dictionaries', [parse_dictionary_com, parse_merriam_webster, parse_oxford, parse_collins, parse_vocabulary])
     users[message.chat.id][w].get_defs(users[message.chat.id]['selected_dictionaries'])
     users[message.chat.id][w].get_synonyms()
     users[message.chat.id][w].get_examples()
